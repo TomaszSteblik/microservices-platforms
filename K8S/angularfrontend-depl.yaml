@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: angularfrontend-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels: 
+      app: angularfrontend
+  template:
+    metadata:
+      labels: 
+        app: angularfrontend
+    spec:
+      containers:
+        - name: angularfrontend
+          image: braght/platformfrontend
+          ports:
+          - containerPort: 80
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: angularfrontend-clusterip-srv
+spec:
+  type: ClusterIP
+  selector: 
+    app: angularfrontend
+  ports:
+  - name: angularfrontend
+    protocol: TCP
+    port: 80

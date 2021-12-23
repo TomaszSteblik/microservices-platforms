@@ -24,3 +24,10 @@ spec:
               name: commands-clusterip-srv
               port:
                 number: 80
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: angularfrontend-clusterip-srv
+              port:
+                number: 80
