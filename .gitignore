@@ -4,4 +4,5 @@
 /PlatformService/.idea/
 /PlatformService/obj/
 /PlatformService/bin/
-
+.vscode
+.DS_Store
