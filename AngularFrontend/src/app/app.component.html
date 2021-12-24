@@ -1,9 +1,11 @@
 <!-- This nav gives you links to click, which tells the router which route to use (defined in the routes constant in  AppRoutingModule) -->
 <mat-toolbar color="primary">
   <nav>
-    <a mat-button routerLink="/home" routerLinkActive="active"><mat-icon>code</mat-icon> Microservices</a>
-    <a mat-button routerLink="/platforms" routerLinkActive="active">Platforms</a>
-    <a mat-button routerLink="/commands" routerLinkActive="active" class="clicked">Commands</a>
+    <a mat-button routerLink="/home" routerLinkActive="active" [ngClass]="{'clicked': position === 'home'}" (click)="setPosition('home')">
+      <mat-icon>code</mat-icon> Microservices
+    </a>
+    <a mat-button routerLink="/platforms" routerLinkActive="active" [ngClass]="{'clicked': position === 'platforms'}" (click)="setPosition('platforms')">Platforms</a>
+    <a mat-button routerLink="/commands" routerLinkActive="active" [ngClass]="{'clicked': position === 'commands'}" (click)="setPosition('commands')">Commands</a>
 </nav>
 </mat-toolbar>
 
