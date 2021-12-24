@@ -12,7 +12,7 @@ export class AppComponent {
   position = '';
 
   constructor(public route:ActivatedRoute, public location:Location) {
-    this.position = location.path().split('/')[1];
+    this.position = location.path().split('/')[1] ?? 'home';
   }
 
   setPosition = (position:string) => {
