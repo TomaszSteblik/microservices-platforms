@@ -25,18 +25,22 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseCors(z=>z.AllowAnyOrigin());
+}
+else
+{
+    app.UseHttpsRedirection();
 }
 using var scope = app.Services.CreateScope();
 (scope.ServiceProvider.GetService(typeof(AppDbContext)) as AppDbContext)!.Database.Migrate();
 PrepDb.PrepPopulation(app);
-
-app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.MapGrpcService<GrpcPlatformService>();
+
 
 app.MapGet("/protos/platforms.proto", async context =>
 {
