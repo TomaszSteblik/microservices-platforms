@@ -1,4 +1,4 @@
-export interface PlatformReadDto {
+export interface CommandReadDto {
     id: number;
     howTo: string;
     commandLine: string;
