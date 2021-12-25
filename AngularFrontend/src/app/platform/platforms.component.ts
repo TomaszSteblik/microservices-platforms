@@ -4,8 +4,8 @@ import { PlatformReadDto } from '../models/PlatformReadDto';
 
 @Component({
   selector: 'app-platform',
-  templateUrl: './platform.component.html',
-  styleUrls: ['./platform.component.less']
+  templateUrl: './platforms.component.html',
+  styleUrls: ['./platforms.component.less']
 })
 
 export class PlatformComponent implements OnInit {
@@ -21,8 +21,6 @@ export class PlatformComponent implements OnInit {
   private getPlatforms(){
     this.platformService.getPlatforms().subscribe(platforms => {
       this.platforms = platforms;
-      console.log(this.platforms);
-
     })
   }
 

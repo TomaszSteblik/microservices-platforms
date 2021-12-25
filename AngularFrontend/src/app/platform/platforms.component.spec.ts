@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PlatformComponent } from './platform.component';
+import { PlatformComponent } from './platforms.component';
 
 describe('PlatformComponent', () => {
   let component: PlatformComponent;
