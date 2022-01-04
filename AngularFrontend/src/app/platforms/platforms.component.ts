@@ -3,16 +3,16 @@ import { PlatformService } from '../platform.service';
 import { PlatformReadDto } from '../models/PlatformReadDto';
 
 @Component({
-  selector: 'app-platform',
+  selector: 'app-platforms',
   templateUrl: './platforms.component.html',
   styleUrls: ['./platforms.component.less']
 })
 
-export class PlatformComponent implements OnInit {
+export class PlatformsComponent implements OnInit {
 
   constructor(private platformService : PlatformService) { }
 
-  platforms: PlatformReadDto[] = [];
+  platforms?: PlatformReadDto[];
 
   ngOnInit(): void {
     this.getPlatforms();

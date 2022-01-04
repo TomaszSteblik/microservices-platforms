@@ -1,0 +1,106 @@
+version: "3.9"
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    restart: unless-stopped
+    container_name: rabbitmq
+    ports:
+        - 5672:5672
+        - 15672:15672
+    volumes:
+        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+        - microservices-network
+  database:
+      image: postgres
+      container_name: database
+      restart: unless-stopped
+      tty: true
+      ports:
+        - "5432:5432"
+      environment:
+        POSTGRES_DB: platforms
+        POSTGRES_PASSWORD: Pas5w0rd
+      volumes:
+        - dbdata:/var/lib/postgresql/data
+      networks:
+        - microservices-network
+  platforms:
+      container_name: platforms
+      restart: unless-stopped
+      build:
+        dockerfile: Dockerfile
+        context: ./PlatformService
+      ports:
+        - "8081:80"
+        - "666:666"
+      depends_on:
+        - database
+        - rabbitmq
+      networks:
+        - microservices-network
+      links:
+        - "database:postgres-clusterip-srv"
+        - "rabbitmq:rabbitmq-clusterip-srv"
+  commands:
+      container_name: commands
+      restart: on-failure
+      build:
+        dockerfile: Dockerfile
+        context: ./CommandsService
+      ports:
+        - "8080:80"
+      depends_on:
+        - rabbitmq
+        - database
+      networks:
+        - microservices-network
+      links:
+        - "platforms:platforms-clusterip-srv"
+        - "rabbitmq:rabbitmq-clusterip-srv"
+  frontendms:
+    container_name: frontendms
+    restart: unless-stopped
+    build:
+      dockerfile: Dockerfile.Development
+      context: ./AngularFrontend
+    expose:
+      - 4200
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./AngularFrontend/:/app
+    working_dir: /app
+    #command: "npm install && npm install -g @angular/cli@8.1.2 && ng serve --open --host 0.0.0.0 --port 4200 --disable-host-check"
+    command: "ng serve --open --host 0.0.0.0 --port 4200 --disable-host-check"
+    depends_on:
+      - platforms
+      - commands
+    networks:
+      - microservices-network
+  nginx: 
+    restart: always
+    container_name: gateway
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - '80:80'
+    depends_on:
+      - platforms
+      - commands
+      - frontendms
+    networks:
+      - microservices-network
+    links:
+      - "platforms:platforms-clusterip-srv"
+      - "commands:commands-clusterip-srv"
+      - "frontendms:angularfrontend-clusterip-srv"
+networks:
+  microservices-network:
+    driver: bridge
+volumes:
+  dbdata:
+    driver: local
+  node_modules:

@@ -4,8 +4,10 @@
 
 export const environment = {
   production: false,
-  commandService: 'http://localhost:6000/api',
-  platformService: 'http://localhost:5000/api'
+  //commandService: 'http://localhost:6000/api',
+  //platformService: 'http://localhost:5000/api'
+  commandService: 'http://braght.com:80/api',
+  platformService: 'http://braght.com:80/api'
 };
 
 /*

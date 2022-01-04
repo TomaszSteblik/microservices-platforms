@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PlatformComponent } from './platforms.component';
+import { CommandsComponent } from './commands.component';
 
-describe('PlatformComponent', () => {
-  let component: PlatformComponent;
-  let fixture: ComponentFixture<PlatformComponent>;
+describe('CommandsComponent', () => {
+  let component: CommandsComponent;
+  let fixture: ComponentFixture<CommandsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PlatformComponent ]
+      declarations: [ CommandsComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PlatformComponent);
+    fixture = TestBed.createComponent(CommandsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
