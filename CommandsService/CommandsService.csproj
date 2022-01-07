@@ -30,8 +30,4 @@
     <Protobuf Include="Protos\platforms.proto" GrpcServices="Client" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Commands" />
-  </ItemGroup>
-
 </Project>
