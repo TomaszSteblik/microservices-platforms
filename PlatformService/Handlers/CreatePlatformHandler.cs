@@ -27,6 +27,7 @@ public class CreatePlatformHandler : IRequestHandler<CreatePlatformCommand, Plat
         var platform = _mapper.Map<Platform>(request.PlatformCreateDto);
 
         await _platformRepo.CreatePlatform(platform);
+        await _platformRepo.SaveChangesAsync();
 
         var platformReadDto = _mapper.Map<PlatformReadDto>(platform);
         
