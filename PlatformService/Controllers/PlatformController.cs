@@ -40,14 +40,6 @@ public class PlatformController : ControllerBase
     [HttpGet("{id}",Name = "GetPlatformById")]
     public async Task<ActionResult<PlatformReadDto>> GetPlatformById(int id)
     {
-
-        var platform = await _platformRepo.GetPlatformById(id);
-
-        if (platform is null)
-            return NotFound();
-
-        return Ok(_mapper.Map<PlatformReadDto>(platform));
-        
         var query = new GetPlatformByIdQuery(id);
         var result = _mediator.Send(query);
         return result is not null ? Ok(result) : NotFound();
