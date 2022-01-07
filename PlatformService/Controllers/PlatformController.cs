@@ -32,13 +32,9 @@ public class PlatformController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<PlatformReadDto>>> GetPlatforms()
     {
-        
         var query = new GetAllPlatformsQuery();
         var result = _mediator.Send(query);
         return Ok(result);
-        
-        
-        
     }
     
     [HttpGet("{id}",Name = "GetPlatformById")]
@@ -51,6 +47,10 @@ public class PlatformController : ControllerBase
             return NotFound();
 
         return Ok(_mapper.Map<PlatformReadDto>(platform));
+        
+        var query = new GetPlatformByIdQuery(id);
+        var result = _mediator.Send(query);
+        return result is not null ? Ok(result) : NotFound();
     }
 
     [HttpPost]
