@@ -1,9 +1,11 @@
 using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using PlatformService.AsyncDataServices;
 using PlatformService.Data;
 using PlatformService.Dtos;
 using PlatformService.Models;
+using PlatformService.Queries;
 using PlatformService.SyncDataServices;
 
 namespace PlatformService.Controllers;
@@ -16,22 +18,27 @@ public class PlatformController : ControllerBase
     private readonly IMapper _mapper;
     private readonly ICommandDataClient _commandDataClient;
     private readonly IMessageBusClient _messageBusClient;
+    private readonly IMediator _mediator;
 
-    public PlatformController(IPlatformRepo platformRepo, IMapper mapper, ICommandDataClient commandDataClient, IMessageBusClient messageBusClient)
+    public PlatformController(IPlatformRepo platformRepo, IMapper mapper, ICommandDataClient commandDataClient, IMessageBusClient messageBusClient, IMediator mediator)
     {
         _platformRepo = platformRepo;
         _mapper = mapper;
         _commandDataClient = commandDataClient;
         _messageBusClient = messageBusClient;
+        _mediator = mediator;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<PlatformReadDto>>> GetPlatforms()
     {
-
-        var platforms = await _platformRepo.getAllPlatforms();
         
-        return Ok(_mapper.Map<IEnumerable<PlatformReadDto>>(platforms));
+        var query = new GetAllPlatformsQuery();
+        var result = _mediator.Send(query);
+        return Ok(result);
+        
+        
+        
     }
     
     [HttpGet("{id}",Name = "GetPlatformById")]
