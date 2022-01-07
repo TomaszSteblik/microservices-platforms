@@ -2,6 +2,8 @@ using AutoMapper;
 using CommandsService.Data;
 using CommandsService.Dtos;
 using CommandsService.Models;
+using CommandsService.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CommandsService.Controllers;
@@ -10,12 +12,11 @@ namespace CommandsService.Controllers;
 [ApiController]
 public class PlatformController : ControllerBase
 {
-    private readonly ICommandRepo _commandRepo;
-    private readonly IMapper _autoMapper;
-    public PlatformController(ICommandRepo commandRepo, IMapper autoMapper)
+
+    private readonly IMediator _mediator;
+    public PlatformController(IMediator mediator)
     {
-        _commandRepo = commandRepo;
-        _autoMapper = autoMapper;
+        _mediator = mediator;
     }
 
     [HttpPost]
@@ -28,6 +29,8 @@ public class PlatformController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<PlatformReadDto>>> GetAllPlatforms()
     {
-        return Ok(_autoMapper.Map<IEnumerable<PlatformReadDto>>(await _commandRepo.GetAllPlatforms()));
+        var query = new GetAllPlatformsQuery();
+        var result = await _mediator.Send(query);
+        return Ok(result);
     }
 }
