@@ -2,6 +2,8 @@ using AutoMapper;
 using CommandsService.Data;
 using CommandsService.Dtos;
 using CommandsService.Models;
+using CommandsService.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CommandsService.Controllers;
@@ -12,34 +14,29 @@ public class CommandController : ControllerBase
 {
     private readonly ICommandRepo _commandRepo;
     private readonly IMapper _autoMapper;
+    private readonly IMediator _mediator;
     
-    public CommandController(IMapper autoMapper, ICommandRepo commandRepo)
+    public CommandController(IMapper autoMapper, ICommandRepo commandRepo, IMediator mediator)
     {
         _autoMapper = autoMapper;
         _commandRepo = commandRepo;
+        _mediator = mediator;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<CommandReadDto>>> GetCommandsForPlatform(int platformId)
     {
-        if(!await _commandRepo.PlatformExists(platformId))
-            return NotFound();
-        
-        return Ok(_autoMapper.Map<IEnumerable<CommandReadDto>>(await _commandRepo.GetCommandsForPlatform(platformId)));
+        var query = new GetCommandsForPlatformQuery(platformId);
+        var result = await _mediator.Send(query);
+        return result is null ? NotFound() : Ok(result);
     }
 
     [HttpGet("{commandId}", Name = nameof(GetCommandForPlatform))]
     public async Task<ActionResult<CommandReadDto>> GetCommandForPlatform(int platformId, int commandId)
     {
-        if(!await _commandRepo.PlatformExists(platformId))
-            return NotFound();
-        
-        var command = await _commandRepo.GetCommand(platformId, commandId);
-
-        if (command is null)
-            return NotFound();
-        
-        return Ok(_autoMapper.Map<CommandReadDto>(command));
+        var query = new GetCommandForPlatformQuery(platformId, commandId);
+        var result = await _mediator.Send(query);
+        return result is null ? NotFound() : Ok(result);
     }
 
     [HttpPost]
