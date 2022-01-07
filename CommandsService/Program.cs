@@ -2,6 +2,7 @@ using CommandsService.AsyncDataServices;
 using CommandsService.Data;
 using CommandsService.EventProcessing;
 using CommandsService.SyncDataServices.Grpc;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,7 @@ builder.Services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("comm
 builder.Services.AddSingleton<IEventProcessor, EventProcessor>();
 builder.Services.AddHostedService<MessageBusSubscriber>();
 builder.Services.AddScoped<IPlatformDataClient, PlatformDataClient>();
+builder.Services.AddMediatR(typeof(Program));
 
 var app = builder.Build();
 
