@@ -27,7 +27,7 @@ public class PlatformController : ControllerBase
     public async Task<ActionResult<IEnumerable<PlatformReadDto>>> GetPlatforms()
     {
         var query = new GetAllPlatformsQuery();
-        var result = _mediator.Send(query);
+        var result = await _mediator.Send(query);
         return Ok(result);
     }
     
@@ -35,7 +35,7 @@ public class PlatformController : ControllerBase
     public async Task<ActionResult<PlatformReadDto>> GetPlatformById(int id)
     {
         var query = new GetPlatformByIdQuery(id);
-        var result = _mediator.Send(query);
+        var result = await _mediator.Send(query);
         return result is not null ? Ok(result) : NotFound();
     }
 
