@@ -28,9 +28,5 @@
   <ItemGroup>
     <Protobuf Include="Protos\platforms.proto" GrpcServices="Server" />
   </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="Commands" />
-  </ItemGroup>
 
 </Project>

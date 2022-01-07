@@ -2,6 +2,7 @@ using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using PlatformService.AsyncDataServices;
+using PlatformService.Commands;
 using PlatformService.Data;
 using PlatformService.Dtos;
 using PlatformService.Models;
@@ -14,18 +15,11 @@ namespace PlatformService.Controllers;
 [ApiController]
 public class PlatformController : ControllerBase
 {
-    private readonly IPlatformRepo _platformRepo;
-    private readonly IMapper _mapper;
-    private readonly ICommandDataClient _commandDataClient;
-    private readonly IMessageBusClient _messageBusClient;
+
     private readonly IMediator _mediator;
 
-    public PlatformController(IPlatformRepo platformRepo, IMapper mapper, ICommandDataClient commandDataClient, IMessageBusClient messageBusClient, IMediator mediator)
+    public PlatformController(IMediator mediator)
     {
-        _platformRepo = platformRepo;
-        _mapper = mapper;
-        _commandDataClient = commandDataClient;
-        _messageBusClient = messageBusClient;
         _mediator = mediator;
     }
 
@@ -48,21 +42,8 @@ public class PlatformController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<PlatformReadDto>> CreatePlatform([FromBody] PlatformCreateDto platformCreateDto)
     {
-        var platform = _mapper.Map<Platform>(platformCreateDto);
-
-        await _platformRepo.CreatePlatform(platform);
-
-        var platformReadDto = _mapper.Map<PlatformReadDto>(platform);
-        
-
-        if (!await _platformRepo.SaveChangesAsync())
-            return BadRequest();
-
-        var platformPublishDto = _mapper.Map<PlatformPublishDto>(platformReadDto);
-        platformPublishDto.Event = "Platform_Published";
-        platformPublishDto.Id = platform.Id;
-        _messageBusClient.PublishPlatform(platformPublishDto);
-        platformReadDto.Id = platform.Id;
-        return CreatedAtRoute(nameof(GetPlatformById), new {Id=platformReadDto.Id},platformReadDto);
+        var command = new CreatePlatformCommand(platformCreateDto);
+        var result = await _mediator.Send(command);
+        return CreatedAtRoute(nameof(GetPlatformById), new {Id = result.Id}, result);
     }
 }
